@@ -3,6 +3,7 @@ import { ApiError } from "../utils/Apierror.js";
 import {userModel} from "../models/userModel.js"; 
 import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import {ApiResponse} from "../utils/ApiResponse.js"
+
 const registerUser = asyncHandler( async(req , res) => {
     // get user detail from frontend
     // check validation that all fields are not empty
@@ -14,7 +15,6 @@ const registerUser = asyncHandler( async(req , res) => {
     //check user creation 
     // send response
    const {email , fullName , password , username , } =  req.body;
-
      if(
         [email , fullName , password , username].some(
             (fields) => fields?.trim() === ""
@@ -23,15 +23,22 @@ const registerUser = asyncHandler( async(req , res) => {
         throw new ApiError(400 , "All fields are require");
      }  
 
-     const existUser = userModel.findOne({
+     const existUser = await userModel.findOne({
           $or : [{username} , {email}]
      }) 
 
       if(existUser) {
-        throw new ApiError(409 , "username and with with user already exist")
+        throw new ApiError(409 , "username and with  user already exist")
       } 
+    
       const avatarLocalPath = req.files?.avatar[0]?.path
-      const coverImageLocalPath = req.files?.coverImage[0].path 
+      //const coverImageLocalPath = req.files?.coverImage[0].path 
+
+       let coverImageLocalPath;
+       if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+        coverImageLocalPath = req.files?.coverImage[0].path 
+       }
+
       if(!avatarLocalPath) {
         throw new ApiError(400,"Avatar file require")
       }
@@ -50,7 +57,7 @@ const registerUser = asyncHandler( async(req , res) => {
          avatar : avatar.url,
          coverImage : coverImage?.url || "",
       }) 
-       createdUser = await userModel.findById(user._id).select("-password -refreshToken");
+      const createdUser = await userModel.findById(user._id).select("-password -refreshToken");
 
        if(!createdUser) {
          throw new ApiError(500 , "something went wrong while registring user")
