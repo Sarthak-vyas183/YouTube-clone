@@ -389,16 +389,19 @@ const userChannelProfile = asyncHandler(async(req , res)=> {
                },
                subscribedToCount : {
                  $size : "$subscribedTo"
-               }
+               },
+
+               isSubscribed : {
+                $cond : {
+                  if : {$in : [req.user?._id , "$subscribers.subscriber"]},
+                  then : true,
+                  else : false
+                }
+            }
+
              },
  
-             isSubscribed : {
-                 $cond : {
-                   if : {$in : [req.user?._id , "$subscribers.subscriber"]},
-                   then : true,
-                   else : false
-                 }
-             }
+             
            },  
  
  
@@ -431,58 +434,69 @@ const userChannelProfile = asyncHandler(async(req , res)=> {
 })
 
 const getWatchHistory = asyncHandler(async(req , res) => {
-     const user = await userModel.aggregate([
-          {
-            $match : {
-               _id : new mongoose.Types.ObjectId(req.user._id)
-            }
-          },
-           {
-             $lookup : {
-               from : "videos",
-               localField : "watchHistory",
-               foreignField : "_id",
-               as : "watchHistory",
-               pipeline : [
-                    {
-                      $lookup : {
-                        from : "users",
-                        localField : "owner",
-                        foreignField : "_id",
-                        as : "owner",
-                        pipeline : [
-                          {
-                             $project : {
-                              fullName : 1,
-                              email : 1,
-                              username : 1,
-                              avatar : 1,
-                              coverImage : 1,
-
-                             }
-                          }
-                        ]
-                      } 
-                    } , 
-
-                   {
-                    $addFields : {
-                      owner : {
-                          $first : "$owner"
+    try {
+       const user = await userModel.aggregate([
+            {
+              $match : {
+                 _id : new mongoose.Types.ObjectId(req.user._id)
+              }
+            },
+             {
+               $lookup : {
+                 from : "videos",
+                 localField : "watchHistory",
+                 foreignField : "_id",
+                 as : "watchHistory",
+                 pipeline : [
+                      {
+                        $lookup : {
+                          from : "users",
+                          localField : "owner",
+                          foreignField : "_id",
+                          as : "owner",
+                          pipeline : [
+                            {
+                               $project : {
+                                fullName : 1,
+                                email : 1,
+                                username : 1,
+                                avatar : 1,
+                                coverImage : 1,
+  
+                               }
+                            }
+                          ]
+                        } 
+                      } , 
+  
+                     {
+                      $addFields : {
+                        owner : {
+                            $first : "$owner"
+                        }
                       }
-                    }
-                   }
-               ]
+                     }
+                 ]
+               }
+  
              }
-
-           }
-     ]);
-
-     if(!user) { 
-       throw new ApiError(404 , "user not found in watch history")
-     }
-
-     return res.json(200 , user , "watch History fetched successfully ")
+       ]);
+  
+       if(!user) { 
+         throw new ApiError(404 , "user not found in watch history")
+       }
+  
+       return res
+       .status(200)
+       .json(
+           new ApiResponse(
+               200,
+               user[0].watchHistory,
+               "Watch history fetched successfully"
+           )
+       )    } catch (error) {
+      res.send(`Internal server error : ${error}`)
+    }
 })
 
 export {
