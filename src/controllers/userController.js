@@ -357,7 +357,6 @@ const userChannelProfile = asyncHandler(async(req , res)=> {
    try {
      const {username}  = req.params;
      if(!username?.trim()) return new ApiError(400 , "username missing");
-     //const user = await userModel.find({username})
     const channel = await userModel.aggregate([ 
      { 
            $match : {
