@@ -23,8 +23,8 @@ import tweetRouter from "./routes/tweetRouter.js"
 import commentRouter from "./routes/commentRouter.js"
 import LikeRouter from "./routes/likeRoute.js";
 import playlistRouter from "./routes/playlistRouter.js"
-import healthcheckRouter from "./routes/healthcheckRouter.js"
 import dashboardRouter from "./routes/dashboardRouter.js"
+import healthcheckRouter from "./routes/healthcheckRouter.js"
 
 app.use("/api/v1/user" , userRouter)
 app.use("/api/v1/videos" ,videoRouter)
@@ -33,9 +33,8 @@ app.use("/api/v1/tweets", tweetRouter);
 app.use("/api/v1/comment", commentRouter);
 app.use("/api/v1/like", LikeRouter );
 app.use("/api/v1/playlist", playlistRouter)
-app.use("/api/v1/healthcheck", healthcheckRouter)
-app.use("/api/v1/dashboard", dashboardRouter)
-
+app.use("/api/v1/dashboard", dashboardRouter);
+app.use("/api/v1/healthCheck", healthcheckRouter)
 
 
 export { app }

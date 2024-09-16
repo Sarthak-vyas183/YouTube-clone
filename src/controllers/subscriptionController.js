@@ -6,34 +6,6 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { isValidObjectId } from "mongoose";
 
-// const getSubscribedChannels = async(req, res) => {
-//     try {
-//        const userId = req.user._id;
-//       const channels = await subscriptionModel.aggregate([
-//           {
-//             $match : {
-//                 subscriber : userId
-//             }
-//           },
-//           {
-//              $lookup : {
-//                 from : "users",
-//                 localField : "channel",
-//                 foreignField : "_id",
-//                 as : "channels"
-//              }
-//           },
-//            {
-//             $addFields : {
-//                channelDetail : "$channels"
-//             }
-//            }
-//       ])
-//     } catch (error) {
-//        res.send(`Internal Error : ${error}`);
-//     }
-// }
-
 //controller return channel list which user have subscribed !
 const getSubscribedChannels = asyncHandler(async (req, res) => {
   const subscriberId = req.user?._id;
