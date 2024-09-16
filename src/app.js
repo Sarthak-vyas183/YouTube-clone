@@ -22,13 +22,15 @@ import subscriptionRouter from "./routes/subscriptionRouter.js"
 import tweetRouter from "./routes/tweetRouter.js"
 import commentRouter from "./routes/commentRouter.js"
 import LikeRouter from "./routes/likeRoute.js";
+import playlistRouter from "./routes/playlistRouter.js"
 
 app.use("/api/v1/user" , userRouter)
 app.use("/api/v1/videos" ,videoRouter)
 app.use("/api/v1/subscriptions",subscriptionRouter)
 app.use("/api/v1/tweets", tweetRouter);
 app.use("/api/v1/comment", commentRouter);
-app.use("/api/v1/like", LikeRouter )
+app.use("/api/v1/like", LikeRouter );
+app.use("/api/v1/playlist", playlistRouter)
 
 
 export { app }
