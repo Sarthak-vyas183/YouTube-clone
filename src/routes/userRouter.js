@@ -12,6 +12,7 @@ import {
   coverImageUpdate,
   userChannelProfile,
   getWatchHistory,
+  SendLoggedUserData
 } from "../controllers/userController.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -47,5 +48,6 @@ router
   .patch(verifyJWT, upload.single("coverImage"), coverImageUpdate);
 router.route("/channel/:username").get(verifyJWT, userChannelProfile);
 router.route("/getWatchHistory").post(verifyJWT, getWatchHistory);
+router.route("/verifyUserToken").post(verifyJWT, SendLoggedUserData);
 
 export default router;

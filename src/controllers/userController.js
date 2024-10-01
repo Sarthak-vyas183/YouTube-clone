@@ -498,6 +498,14 @@ const getWatchHistory = asyncHandler(async(req , res) => {
     }
 })
 
+const SendLoggedUserData = asyncHandler(async(req, res)=> {
+   try {
+     res.send(req.user)
+   } catch (error) {
+    res.status(404).send(error)
+   }
+})
+
 export {
   registerUser,
   loginUser,
@@ -509,5 +517,6 @@ export {
   updateAvatar,
   coverImageUpdate,
   userChannelProfile,
-  getWatchHistory
+  getWatchHistory,
+  SendLoggedUserData
 };
