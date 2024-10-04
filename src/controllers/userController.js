@@ -87,11 +87,31 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if (!createdUser) {
     throw new ApiError(500, "something went wrong while registring user");
-  }
+  } 
+  
+
+  const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
+    createdUser._id
+  );
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
   return res
     .status(201)
-    .json(new ApiResponse(200, createdUser, "User Register Successfully"));
-});
+    //.cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: createdUser,
+          accessToken,
+          refreshToken,
+        },
+        "Registration success"
+      )
+    );});
 
 const loginUser = asyncHandler(async (req, res) => {
   // req body -> data
@@ -142,7 +162,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .cookie("accessToken", accessToken, options)
+    //.cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
     .json(
       new ApiResponse(
