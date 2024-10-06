@@ -437,9 +437,8 @@ const userChannelProfile = asyncHandler(async(req , res)=> {
              }
            }
      ]) 
-     console.log(channel);
      if(!channel?.length) {
-       throw new ApiError(404 , "channel does not exist!");
+      res.status(404).json({msg : "channel does not found"})
      } 
      
      return res.status(200)
