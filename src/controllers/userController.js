@@ -111,7 +111,7 @@ const registerUser = asyncHandler(async (req, res) => {
         },
         "Registration success"
       )
-    );});
+);});
 
 const loginUser = asyncHandler(async (req, res) => {
   // req body -> data
