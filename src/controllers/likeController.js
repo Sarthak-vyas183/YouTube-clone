@@ -12,8 +12,10 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
     if (!isValidObjectId(videoId)) throw new ApiError(400, "Invalid videoId");
     const Likedvideo = await videoModel.findById(videoId);
-    if (!Likedvideo)
-      throw new ApiError(404, "video not found : Liked source not found");
+    
+    if (!Likedvideo) {
+      throw new ApiError(404, "Video not found : video source not found");
+    }
     
     const Alreadyliked = await LikeModel.findOne({
         video: Likedvideo?._id,
@@ -28,7 +30,8 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
     const likeDocument = await LikeModel.create({
       video: Likedvideo?._id,
       likedBy: req.user?._id,
-    });
+    }); 
+
     if (!likeDocument) throw new ApiError(400, "Failed to like the video");
     return res
       .status(200)
@@ -114,6 +117,8 @@ const getLikedVideos = asyncHandler(async (req, res) => {
    } catch (error) {
     res.status(500).send(`Internal server Error : ${error}`)
    }
-});
+}); 
+
+
 
 export { toggleCommentLike, toggleTweetLike, toggleVideoLike, getLikedVideos };

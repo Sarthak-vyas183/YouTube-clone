@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { publishAVideo , getAllVideos, getVideoById, deleteVideo, updateVideo,   togglePublishStatus, } from "../controllers/videoController.js";
+import { publishAVideo , getAllVideos, getVideoById, deleteVideo, updateVideo,   togglePublishStatus, getLikedCountOnVideo } from "../controllers/videoController.js";
 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import {upload} from "../middlewares/multer.middleware.js"
@@ -30,5 +30,6 @@ router
      .patch(verifyJWT, upload.single("thumbnail"), updateVideo)
 
 router.route("/toggle/publish/:videoId").patch(togglePublishStatus);
+router.route("/toggle/publish/:videoId").post(getLikedCountOnVideo);
 
 export default router

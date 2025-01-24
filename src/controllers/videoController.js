@@ -5,6 +5,7 @@ import { ApiError } from "../utils/Apierror.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { LikeModel } from "../models/likeModel.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
   try {
@@ -179,6 +180,27 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, {}, "video is Published"));
 });
 
+const getLikedCountOnVideo = asyncHandler(async (req, res) => {
+  try {
+    const { videoId } = req.params;
+
+    // Validate videoId
+    if (!isValidObjectId(videoId)) {
+      throw new ApiError(400, "Invalid videoId");
+    }
+
+    // Get the count of likes
+    const LikedCount = await LikeModel.find({ video: videoId }).countDocuments();
+
+    // Send the count in JSON format
+    res.status(200).json({ count: LikedCount });
+  } catch (error) {
+    // Handle errors and send response in JSON format
+    res.status(500).json({ error: `Internal Server Error: ${error.message}` });
+  }
+});
+
+
 export {
   getAllVideos,
   publishAVideo,
@@ -186,4 +208,5 @@ export {
   updateVideo,
   deleteVideo,
   togglePublishStatus,
+  getLikedCountOnVideo,
 };
