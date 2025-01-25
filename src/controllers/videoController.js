@@ -200,6 +200,30 @@ const getLikedCountOnVideo = asyncHandler(async (req, res) => {
   }
 });
 
+const getLikedCountOnComment = asyncHandler(async (req, res) => {
+  try {
+    const { commentId } = req.params;
+
+    // Validate commentId
+    if (!isValidObjectId(commentId)) {
+      throw new ApiError(400, "Invalid commentId");
+    }
+
+    // Fetch the count of likes for the comment
+    const count = await LikeModel.find({ comment: commentId }).countDocuments();
+
+    // Return the count with a proper response structure
+    res.status(200).json({ success: true, count });
+  } catch (error) {
+    // Handle errors safely
+    const statusCode = error.status || 500; // Default to 500 if status is undefined
+    res.status(statusCode).json({
+      success: false,
+      message: error.message || "Internal Server Error",
+    });
+  }
+});
+
 
 export {
   getAllVideos,
@@ -209,4 +233,5 @@ export {
   deleteVideo,
   togglePublishStatus,
   getLikedCountOnVideo,
+  getLikedCountOnComment,
 };

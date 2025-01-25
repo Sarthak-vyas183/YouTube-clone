@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { publishAVideo , getAllVideos, getVideoById, deleteVideo, updateVideo,   togglePublishStatus, getLikedCountOnVideo } from "../controllers/videoController.js";
+import { publishAVideo , getAllVideos, getVideoById, deleteVideo, updateVideo,   togglePublishStatus, getLikedCountOnVideo, getLikedCountOnComment } from "../controllers/videoController.js";
 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import {upload} from "../middlewares/multer.middleware.js"
@@ -31,5 +31,6 @@ router
 
 router.route("/toggle/publish/:videoId").patch(togglePublishStatus);
 router.route("/toggle/publish/:videoId").post(getLikedCountOnVideo);
+router.route("/toggle/C/:commentId").post(getLikedCountOnComment);
 
 export default router
